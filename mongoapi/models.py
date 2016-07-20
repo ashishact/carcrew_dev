@@ -1,7 +1,7 @@
 from django.db import models
 
 
-# django mongo connection test
+# django mongo connection
 from mongoengine import *
 import datetime
 
@@ -24,8 +24,6 @@ db = {
 # connect to the database in mongodb://localhost:27017/carcrew_test
 connect(db['name'])
 
-
-
 # Models
 
 
@@ -45,4 +43,5 @@ class Part(Document):
 
 class Garage(Document):
 	pass
+
 

@@ -3,8 +3,8 @@ repo of development version for backend
 
 install python3
 
+```bash
 $ pip3 install virtualenv
-
 $ virtualenv ~/.djangodev
 
 $ mkdir carcrew
