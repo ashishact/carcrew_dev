@@ -14,6 +14,13 @@ from jsonapi.serializers import CarSerializers, ProductSerializers, GarageSerial
 def index(request):
     return HttpResponse("<h1>THIS IS JSON API</h1>")
 
+# Shortcuts #######################################
+# from django.shortcuts import render_to_response
+#
+#
+# def index(request):
+#     return render_to_response('public/index.html')
+###################################################
 
 class JSONResponse(HttpResponse):
     """

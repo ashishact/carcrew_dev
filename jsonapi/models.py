@@ -3,6 +3,10 @@ from django.db import models
 from django.core.validators import RegexValidator #feild included for phone number
 
 
+# Resources
+from resources import car_models_name
+
+
 class CommaSepField(models.Field):
     "Implements comma-separated storage of lists"
 
@@ -22,20 +26,20 @@ class CommaSepField(models.Field):
 
 
 class Car(models.Model):
-
-    MANUFACTURER_LIST = (
-        (1, 'Maruti'),
-        (2, 'Hyundai'),
-        (3, 'Tata Motors'),
-        (4, 'Mahindra and Mahindra'),
-        (5, 'Toyota'),
-        (6, 'Honda'),
-        (7, 'Chevrolet'),
-        (8, 'Volkswagen'),
-        (9, 'Skoda'),
-        (10, 'Fiat'),
-        (11, 'Renault'),
-    )
+    MANUFACTURER_LIST = [(i, car_models_name.car_models_names[i]) for i in range(0, len(car_models_name.car_models_names))]
+    # MANUFACTURER_LIST = (
+    #     (1, 'Maruti'),
+    #     (2, 'Hyundai'),
+    #     (3, 'Tata Motors'),
+    #     (4, 'Mahindra and Mahindra'),
+    #     (5, 'Toyota'),
+    #     (6, 'Honda'),
+    #     (7, 'Chevrolet'),
+    #     (8, 'Volkswagen'),
+    #     (9, 'Skoda'),
+    #     (10, 'Fiat'),
+    #     (11, 'Renault'),
+    # )
 
     TYPE_CHOICES = (
         (1, 'Petrol'),
@@ -55,7 +59,7 @@ class Car(models.Model):
     )
 
     Model = models.CharField(max_length=255)
-    Type = models.CharField(max_length=255)
+    Type = models.CharField(max_length=255)  # for Maruti suzuki -> LXI, VXI
     Transmission = models.IntegerField(
         choices=TYPE_CHOICES,
         default=None,
