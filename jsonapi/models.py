@@ -40,8 +40,8 @@ class Car(models.Model):
     TYPE_CHOICES = (
         (1, 'Petrol'),
         (2, 'Diesel'),
-        (3, 'Gas'),
-        (4, 'Petrol_Gas'),
+        (3, 'CNG/LPG Company Fitted'),
+        (4, 'CNG/LPG Externally Fitted'),
         (5, 'Electric'),
     )
 
@@ -62,7 +62,7 @@ class Car(models.Model):
     )
     Year_of_Manufacture = models.IntegerField(choices=[(i, i) for i in range(1950, 2017)], blank=True)
     Number_of_Service = models.PositiveIntegerField(default=0)
-    Number_of_KMs_Travelled = models.PositiveIntegerField(default=0)
+    Number_of_KMs = models.PositiveIntegerField(default=0)
     Registration_Number = models.CharField(max_length=255)
     Engine_Number = models.CharField(max_length=255)
 
@@ -110,7 +110,7 @@ class Product(models.Model):
         default=None,
     )
     Image = models.URLField()
-    Tags = CommaSepField(default='Ashish')
+    # Tags = CommaSepField(default='Ashish')
     Compatible_Car = models.ForeignKey(Car, related_name='compatible_car')
     Original_Car = models.ForeignKey(Car, related_name='original_car')
 

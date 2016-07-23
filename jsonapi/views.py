@@ -56,7 +56,7 @@ def car_detail(request, pk):
         return HttpResponse(status=404)
 
     if request.method == 'GET':
-        serializer = ProductSerializers(car)
+        serializer = CarSerializers(car)
         return JSONResponse(serializer.data)
 
     elif request.method == 'PUT':

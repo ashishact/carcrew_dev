@@ -16,3 +16,6 @@ MA3EED81S00694577G8
 
  no_ioq = '';  // Don't allow characters I,O or Q
  ^[a-hj-npr-z0-9]{8}[0-9xX][a-hj-npr-z0-9]{8}$
+
+
+
