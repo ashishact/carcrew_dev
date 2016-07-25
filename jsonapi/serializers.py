@@ -7,13 +7,13 @@ class CarSerializers(serializers.ModelSerializer):
         model = Car
         fields = (
             'Car_Chasis_Number',
-            'Car_Manufacture',
+            # 'Car_Manufacturer',
             'Model',
-            'Type',
+            'Fuel_Type',
             'Transmission',
             'Year_of_Manufacture',
             'Number_of_Service',
-            'Number_of_KMs',
+            'Number_of_KMs_Travelled',
             'Registration_Number',
             'Engine_Number',
         )
@@ -50,10 +50,11 @@ class GarageSerializers(serializers.ModelSerializer):
             'Garage_Name',
             'Garage_ID',
             'Garage_Location',
-            'Number_Post_Lift',
+            'Number_of_Two_Post_Lift',
             'Garage_Area',
-            'Number_Mechanic',
+            'Number_of_Mechanic',
             'Field_of_Expertise',
             'Number_of_Advisor',
-            'phone_number',
+            'Phone_Number_Primary',
+            'Phone_Number_Secondary',
         )

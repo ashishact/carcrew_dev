@@ -41,7 +41,7 @@ class Car(models.Model):
     #     (11, 'Renault'),
     # )
 
-    TYPE_CHOICES = (
+    FUEL_TYPE_CHOICES = (
         (1, 'Petrol'),
         (2, 'Diesel'),
         (3, 'CNG/LPG Company Fitted'),
@@ -49,24 +49,35 @@ class Car(models.Model):
         (5, 'Electric'),
     )
 
+    TRANSMISSION_CHOICES = (
+        (1, 'Automatic'),
+        (2, 'Manual'),
+
+    )
+
     # car_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="chasis number must be entered in the format: 'MALA351ALDM165832B'. Up to 19 digits allowed.")
     car_regex = RegexValidator(regex=r'^MA[A-HJ-NPR-Z0-9]{15}$', message="chasis number must be entered in the format: 'MALA351ALDM165832B'. Up to 19 digits allowed.")
 
     Car_Chasis_Number = models.CharField(max_length=19, validators=[car_regex], blank=True, )  # validators should be a list
-    Car_Manufacture = models.IntegerField(
-        choices=MANUFACTURER_LIST,
-        default=None,
-    )
+    # Car_Manufacturer = models.IntegerField(
+    #     choices=MANUFACTURER_LIST,
+    #     default=None,
+    #     null=True,
+    # )
 
     Model = models.CharField(max_length=255)
     Type = models.CharField(max_length=255)  # for Maruti suzuki -> LXI, VXI
+    Fuel_Type = models.IntegerField(
+        choices=FUEL_TYPE_CHOICES,
+        default=None,
+    )
     Transmission = models.IntegerField(
-        choices=TYPE_CHOICES,
+        choices=TRANSMISSION_CHOICES,
         default=None,
     )
     Year_of_Manufacture = models.IntegerField(choices=[(i, i) for i in range(1950, 2017)], blank=True)
     Number_of_Service = models.PositiveIntegerField(default=0)
-    Number_of_KMs = models.PositiveIntegerField(default=0)
+    Number_of_KMs_Travelled = models.PositiveIntegerField(default=0)
     Registration_Number = models.CharField(max_length=255)
     Engine_Number = models.CharField(max_length=255)
 
@@ -94,7 +105,7 @@ class Product(models.Model):
     Manufacture_Name = models.CharField(max_length=500, blank=True)
     Supplier_Name = models.CharField(max_length=500, blank=False)
     Date_of_purchase = models.DateField(blank=True)
-    Status=models.IntegerField(
+    Status = models.IntegerField(
         choices=STATUS_CHOICES,
         default=None,
     )
@@ -135,9 +146,11 @@ class Garage(models.Model):
     Garage_Name = models.CharField(max_length=500)
     Garage_ID = models.IntegerField(primary_key=True)
     Garage_Location = models.CharField(max_length=255, blank=True)
-    Number_Post_Lift = models.IntegerField(blank=True)
+    # Address
+    # Owners (many in no.)
+    Number_of_Two_Post_Lift = models.IntegerField(blank=True)
     Garage_Area = models.IntegerField(blank=True)
-    Number_Mechanic = models.IntegerField(blank=True)
+    Number_of_Mechanic = models.IntegerField(blank=True)
     Field_of_Expertise = models.IntegerField(
         choices=SERVICES,
         default=None,
@@ -145,7 +158,8 @@ class Garage(models.Model):
     )
     Number_of_Advisor = models.IntegerField()
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
-    phone_number = models.CharField(validators=[phone_regex], blank=True, max_length=15) # validators should be a list
+    Phone_Number_Primary = models.CharField(validators=[phone_regex], blank=True, max_length=15) # validators should be a list
+    Phone_Number_Secondary = models.CharField(validators=[phone_regex], blank=True, max_length=15) # validators should be a list
 
     def __str__(self):
         return self.Garage_Name

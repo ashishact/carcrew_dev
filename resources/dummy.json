@@ -1,0 +1,27 @@
+//Garage
+[
+  {
+    "Garage_Name": "Auto Planet",
+    "Garage_ID": 1,
+    "Garage_Location": "Thane",
+    "Number_of_Two_Post_Lift": 25,
+    "Garage_Area": 6000,
+    "Number_of_Mechanic": 25,
+    "Field_of_Expertise": 2,
+    "Number_of_Advisor": 25,
+    "Phone_Number_Primary": "+919897664532",
+    "Phone_Number_Secondary": ""
+  },
+  {
+    "Garage_Name": "Auto Mall",
+    "Garage_ID": 2,
+    "Garage_Location": "Dadar",
+    "Number_of_Two_Post_Lift": 5,
+    "Garage_Area": 1000,
+    "Number_of_Mechanic": 5,
+    "Field_of_Expertise": 1,
+    "Number_of_Advisor": 2,
+    "Phone_Number_Primary": "+919897664832",
+    "Phone_Number_Secondary": "+919834664832"
+  }
+]
