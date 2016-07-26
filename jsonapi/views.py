@@ -1,11 +1,9 @@
 # from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 
 
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 
 from jsonapi.models import Car, Product,  Garage
@@ -27,141 +25,144 @@ def index(request):
 
 
 # Cars ######################################################
-@api_view(['GET', 'POST'])
-def car_list(request, format=None):
+class CarList(APIView):
     """
     List all cars, or create a new car.
     """
-    if request.method == 'GET':
+
+    def get(self, request, format=None):
         cars = Car.objects.all()
         serializer = CarSerializers(cars, many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = CarSerializers(data=data)
+    def post(self, request, format=None):
+        serializer = CarSerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def car_detail(request, pk, format=None):
+class CarDetail(APIView):
     """
-    Retrieve, update or delete a car.
+    send details of a car
     """
-    try:
-        car = Car.objects.get(pk=pk)
-    except Car.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+    def get_object(self, pk):
+        try:
+            return Car.objects.get(pk=pk)
+        except Car.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
+    def get(self, request, pk, format=None):
+        car = self.get_object(pk)
         serializer = CarSerializers(car)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = CarSerializers(car, data=data)
+    def put(self, request, pk, format=None):
+        car = self.get_object(pk)
+        serializer = CarSerializers(car, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk, format=None):
+        car = self.get_object(pk)
         car.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# Products ##################################################
-@api_view(['GET', 'POST'])
-def product_list(request, format=None):
+# Product ######################################################
+class ProductList(APIView):
     """
-    List all code snippets, or create a new snippet.
+    List all cars, or create a new car.
     """
-    if request.method == 'GET':
+
+    def get(self, request, format=None):
         products = Product.objects.all()
         serializer = ProductSerializers(products, many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ProductSerializers(data=data)
+    def post(self, request, format=None):
+        serializer = ProductSerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def product_detail(request, pk, format=None):
+class ProductDetail(APIView):
     """
-    Retrieve, update or delete a code snippet.
+    send details of a car
     """
-    try:
-        product = Product.objects.get(pk=pk)
-    except Product.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+    def get_object(self, pk):
+        try:
+            return Product.objects.get(pk=pk)
+        except Car.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
+    def get(self, request, pk, format=None):
+        product = self.get_object(pk)
         serializer = ProductSerializers(product)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ProductSerializers(product, data=data)
+    def put(self, request, pk, format=None):
+        product = self.get_object(pk)
+        serializer = ProductSerializers(product, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk, format=None):
+        product = self.get_object(pk)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# Garage #############################################
-@api_view(['GET', 'POST'])
-def garage_list(request, format=None):
+# Garage ######################################################
+class GarageList(APIView):
     """
-    List all code snippets, or create a new snippet.
+    List all cars, or create a new car.
     """
-    if request.method == 'GET':
+
+    def get(self, request, format=None):
         garages = Garage.objects.all()
         serializer = GarageSerializers(garages, many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = GarageSerializers(data=data)
+    def post(self, request, format=None):
+        serializer = CarSerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def garage_detail(request, pk, format=None):
+class GarageDetail(APIView):
     """
-    Retrieve, update or delete a code snippet.
+    send details of a car
     """
-    try:
-        garage = Garage.objects.get(pk=pk)
-    except Garage.DoesNotExist:
-        return HttpResponse(status=404)
+    def get_object(self, pk):
+        try:
+            return Garage.objects.get(pk=pk)
+        except Garage.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
-        serializer = GarageSerializers(garage)
+    def get(self, request, pk, format=None):
+        car = self.get_object(pk)
+        serializer = CarSerializers(car)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = GarageSerializers(garage, data=data)
+    def put(self, request, pk, format=None):
+        car = self.get_object(pk)
+        serializer = CarSerializers(car, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=400)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk, format=None):
+        garage = self.get_object(pk)
         garage.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
