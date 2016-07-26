@@ -4,8 +4,7 @@ from django.core.validators import RegexValidator #feild included for phone numb
 
 
 # Resources
-from resources import car_models_name
-
+from . import car_models_name
 
 class CommaSepField(models.Field):
     "Implements comma-separated storage of lists"
@@ -73,6 +72,16 @@ class Car(models.Model):
 
 class Product(models.Model):
     CATEGORY_CHOICES = (
+        (1, 'Engine'),
+        (2, 'Electrical'),
+        (3, 'Brakes'),
+        (4, 'Suspension'),
+        (5, 'Transmission'),
+        (6, 'Body'),
+        (7, 'Heating_Ventilation_Ac'),
+    )
+
+    SUB_CATEGORY_CHOICES = (
         (1, 'Engine'),
         (2, 'Electrical'),
         (3, 'Brakes'),
