@@ -27,19 +27,6 @@ class CommaSepField(models.Field):
 
 class Car(models.Model):
     MANUFACTURER_LIST = [(i, car_models_name.car_models_names[i]) for i in range(0, len(car_models_name.car_models_names))]
-    # MANUFACTURER_LIST = (
-    #     (1, 'Maruti'),
-    #     (2, 'Hyundai'),
-    #     (3, 'Tata Motors'),
-    #     (4, 'Mahindra and Mahindra'),
-    #     (5, 'Toyota'),
-    #     (6, 'Honda'),
-    #     (7, 'Chevrolet'),
-    #     (8, 'Volkswagen'),
-    #     (9, 'Skoda'),
-    #     (10, 'Fiat'),
-    #     (11, 'Renault'),
-    # )
 
     FUEL_TYPE_CHOICES = (
         (1, 'Petrol'),
@@ -55,7 +42,6 @@ class Car(models.Model):
 
     )
 
-    # car_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="chasis number must be entered in the format: 'MALA351ALDM165832B'. Up to 19 digits allowed.")
     car_regex = RegexValidator(regex=r'^MA[A-HJ-NPR-Z0-9]{15}$', message="chasis number must be entered in the format: 'MALA351ALDM165832B'. Up to 19 digits allowed.")
 
     Car_Chasis_Number = models.CharField(max_length=19, validators=[car_regex], blank=True, )  # validators should be a list
@@ -95,6 +81,7 @@ class Product(models.Model):
         (6, 'Body'),
         (7, 'Heating_Ventilation_Ac'),
     )
+
     STATUS_CHOICES = (
         (1, 'available'),
         (2, 'Out of stock'),
@@ -121,7 +108,7 @@ class Product(models.Model):
         default=None,
     )
     Sub_Category = models.IntegerField(
-        choices=CATEGORY_CHOICES,
+        choices=SUB_CATEGORY_CHOICES,
         default=None,
     )
     Image = models.URLField()
