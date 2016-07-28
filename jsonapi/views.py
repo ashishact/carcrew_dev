@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework import generics
 
 from jsonapi.models import Car, Product,  Garage
-from jsonapi.serializers import CarSerializers, ProductSerializers, GarageSerializers
+from jsonapi.serializers import CarSerializer, ProductSerializer, GarageSerializer
 
 # Create your views here.
 
@@ -29,12 +29,12 @@ def index(request):
 # Cars ######################################################
 class CarList(generics.ListCreateAPIView):
     queryset = Car.objects.all()
-    serializer_class = CarSerializers
+    serializer_class = CarSerializer
 
 
 class CarDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Car.objects.all()
-    serializer_class = CarSerializers
+    serializer_class = CarSerializer
 
 # class CarList(APIView):
 #     """
@@ -91,11 +91,11 @@ class ProductList(APIView):
 
     def get(self, request, format=None):
         products = Product.objects.all()
-        serializer = ProductSerializers(products, many=True)
+        serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = ProductSerializers(data=request.data)
+        serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -114,12 +114,12 @@ class ProductDetail(APIView):
 
     def get(self, request, pk, format=None):
         product = self.get_object(pk)
-        serializer = ProductSerializers(product)
+        serializer = ProductSerializer(product)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
         product = self.get_object(pk)
-        serializer = ProductSerializers(product, data=request.data)
+        serializer = ProductSerializer(product, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -139,11 +139,11 @@ class GarageList(APIView):
 
     def get(self, request, format=None):
         garages = Garage.objects.all()
-        serializer = GarageSerializers(garages, many=True)
+        serializer = GarageSerializer(garages, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = CarSerializers(data=request.data)
+        serializer = CarSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -162,12 +162,12 @@ class GarageDetail(APIView):
 
     def get(self, request, pk, format=None):
         car = self.get_object(pk)
-        serializer = CarSerializers(car)
+        serializer = CarSerializer(car)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
         car = self.get_object(pk)
-        serializer = CarSerializers(car, data=request.data)
+        serializer = CarSerializer(car, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
