@@ -46,8 +46,7 @@ INSTALLED_APPS = [
 
     'jsonapi.apps.JsonapiConfig',
 ]
-    # 'mongoengine',
-    # 'mongoengine.django.mongo_auth'
+
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -91,6 +90,11 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
 
 
 ###############################################################
