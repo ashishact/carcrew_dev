@@ -1,165 +1,208 @@
-from __future__ import unicode_literals
+from django.core.urlresolvers import reverse
 from django.db import models
-from django.core.validators import RegexValidator #feild included for phone number
+from django_extensions.db import fields as extension_fields
+
+from .utilmodels import LatLon
 
 
-# Resources
-from resources import car_models_name
+class Brand(models.Model):
+    # Fields
+    Brand_Id = models.PositiveIntegerField(primary_key=True)
+    Brand_Name = models.CharField(max_length=1000, null=False)
 
-
-class CommaSepField(models.Field):
-    "Implements comma-separated storage of lists"
-
-    def __init__(self, separator=",", *args, **kwargs):
-        self.separator = separator
-        super(CommaSepField, self).__init__(*args, **kwargs)
-
-    def deconstruct(self):
-        name, path, args, kwargs = super(CommaSepField, self).deconstruct()
-        # Only include kwarg if it's not the default
-        if self.separator != ",":
-            kwargs['separator'] = self.separator
-        return name, path, args, kwargs
-
-
-# Create your models here.
+    def __str__(self):
+        return self.Brand_Name
 
 
 class Car(models.Model):
-    MANUFACTURER_LIST = [(i, car_models_name.car_models_names[i]) for i in range(0, len(car_models_name.car_models_names))]
-    # MANUFACTURER_LIST = (
-    #     (1, 'Maruti'),
-    #     (2, 'Hyundai'),
-    #     (3, 'Tata Motors'),
-    #     (4, 'Mahindra and Mahindra'),
-    #     (5, 'Toyota'),
-    #     (6, 'Honda'),
-    #     (7, 'Chevrolet'),
-    #     (8, 'Volkswagen'),
-    #     (9, 'Skoda'),
-    #     (10, 'Fiat'),
-    #     (11, 'Renault'),
-    # )
 
-    FUEL_TYPE_CHOICES = (
-        (1, 'Petrol'),
-        (2, 'Diesel'),
-        (3, 'CNG/LPG Company Fitted'),
-        (4, 'CNG/LPG Externally Fitted'),
-        (5, 'Electric'),
-    )
+    # Fields
+    Car_Name = models.CharField(max_length=1000)
+    # slug = extension_fields.AutoSlugField(populate_from='Car_Name', blank=True)
+    Created = models.DateTimeField(auto_now_add=True, editable=False)
+    Last_updated = models.DateTimeField(auto_now=True, editable=False)
+    Car_Id = models.PositiveIntegerField(primary_key=True)
+    Manufacturer_Name = models.IntegerField()  # Take data from manufacturer names
+    Model_Name = models.IntegerField()  # Take data from list of Model Names
+    Version = models.IntegerField()  # Take data from list of Version name
+    Fuel_Type = models.IntegerField()
+    Transmission = models.IntegerField()
+    Year = models.DateField()
 
-    TRANSMISSION_CHOICES = (
-        (1, 'Automatic'),
-        (2, 'Manual'),
-
-    )
-
-    # car_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="chasis number must be entered in the format: 'MALA351ALDM165832B'. Up to 19 digits allowed.")
-    car_regex = RegexValidator(regex=r'^MA[A-HJ-NPR-Z0-9]{15}$', message="chasis number must be entered in the format: 'MALA351ALDM165832B'. Up to 19 digits allowed.")
-
-    Car_Chasis_Number = models.CharField(max_length=19, validators=[car_regex], blank=True, )  # validators should be a list
-    # Car_Manufacturer = models.IntegerField(
-    #     choices=MANUFACTURER_LIST,
-    #     default=None,
-    #     null=True,
-    # )
-
-    Model = models.CharField(max_length=255)
-    Type = models.CharField(max_length=255)  # for Maruti suzuki -> LXI, VXI
-    Fuel_Type = models.IntegerField(
-        choices=FUEL_TYPE_CHOICES,
-        default=None,
-    )
-    Transmission = models.IntegerField(
-        choices=TRANSMISSION_CHOICES,
-        default=None,
-    )
-    Year_of_Manufacture = models.IntegerField(choices=[(i, i) for i in range(1950, 2017)], blank=True)
-    Number_of_Service = models.PositiveIntegerField(default=0)
-    Number_of_KMs_Travelled = models.PositiveIntegerField(default=0)
-    Registration_Number = models.CharField(max_length=255)
-    Engine_Number = models.CharField(max_length=255)
+    class Meta:
+        ordering = ('-Created',)
 
     def __str__(self):
-        return self.Car_Chasis_Number
+        return self.Car_Name
+
+    # def get_absolute_url(self):
+    #     return reverse('cars_detail', args=(self.slug,))
+    #
+    # def get_update_url(self):
+    #     return reverse('cars_update', args=(self.slug,))
 
 
 class Product(models.Model):
-    CATEGORY_CHOICES = (
-        (1, 'Engine'),
-        (2, 'Electrical'),
-        (3, 'Brakes'),
-        (4, 'Suspension'),
-        (5, 'Transmission'),
-        (6, 'Body'),
-        (7, 'Heating_Ventilation_Ac'),
-    )
-    STATUS_CHOICES = (
-        (1, 'available'),
-        (2, 'Out of stock'),
-    )
 
-    Product_ID = models.IntegerField(auto_created=True, primary_key=True)
-    Product_Name = models.CharField(max_length=500)
-    Manufacture_Name = models.CharField(max_length=500, blank=True)
-    Supplier_Name = models.CharField(max_length=500, blank=False)
-    Date_of_purchase = models.DateField(blank=True)
-    Status = models.IntegerField(
-        choices=STATUS_CHOICES,
-        default=None,
-    )
-    Price = models.FloatField()
-    Discount = models.FloatField()
-    Final_Price = models.FloatField()
-    SKU_Number = models.CharField(max_length=255)
-    Meta_Description = models.TextField(max_length=10000)
-    Meta_Keyword = models.CharField(max_length=255)
+    # Fields
+    Product_Name = models.CharField(max_length=255)
+    # slug = extension_fields.AutoSlugField(populate_from='', blank=True)
+    Created = models.DateTimeField(auto_now_add=True, editable=False)
+    Last_updated = models.DateTimeField(auto_now=True, editable=False)
+    Product_Id = models.PositiveIntegerField(primary_key=True)
+    # Brand_Id = models.ForeignKey(Brand)
+    Product_Unique_Name = models.CharField(max_length=1000)
 
-    Category = models.IntegerField(
-        choices=CATEGORY_CHOICES,
-        default=None,
-    )
-    Sub_Category = models.IntegerField(
-        choices=CATEGORY_CHOICES,
-        default=None,
-    )
-    Image = models.URLField()
-    # Tags = CommaSepField(default='Ashish')
-    Compatible_Car = models.ForeignKey(Car, related_name='compatible_car')
-    Original_Car = models.ForeignKey(Car, related_name='original_car')
+    # Relationship Fields
+    Brand_id = models.ForeignKey(Brand, )
+    Compatible_Car = models.ForeignKey(Car, )
+
+    class Meta:
+        ordering = ('-Created',)
 
     def __str__(self):
         return self.Product_Name
 
+    # def get_absolute_url(self):
+    #     return reverse('products_detail', args=(self.slug,))
+    #
+    # def get_update_url(self):
+    #     return reverse('products_update', args=(self.slug,))
+
+
+class Manufacturer(models.Model):
+
+    # Fields
+    Manufacturer_Name = models.CharField(max_length=1000)
+    # slug = extension_fields.AutoSlugField(populate_from='name', blank=True)
+    Created = models.DateTimeField(auto_now_add=True, editable=False)
+    Last_updated = models.DateTimeField(auto_now=True, editable=False)
+    Manufacturer_Id = models.PositiveIntegerField(primary_key=True)
+    Manufacturer_Location = models.ForeignKey(LatLon, )
+
+    class Meta:
+        ordering = ('-Created',)
+
+    def __str__(self):
+        return self.Manufacturer_Name
+    #
+    # def get_absolute_url(self):
+    #     return reverse('manufacturer_detail', args=(self.slug,))
+    #
+    # def get_update_url(self):
+    #     return reverse('manufacturer_update', args=(self.slug,))
+
+
+class Category(models.Model):
+
+    # Fields
+    Category_Name = models.CharField(max_length=1000)
+    # slug = extension_fields.AutoSlugField(populate_from='name', blank=True)
+    Created = models.DateTimeField(auto_now_add=True, editable=False)
+    Last_updated = models.DateTimeField(auto_now=True, editable=False)
+    Category_Id = models.PositiveIntegerField(primary_key=True)
+    Parent_Id = models.PositiveIntegerField(unique=True)
+
+    # Relationship Fields
+    Product_Id = models.ForeignKey(Product, )
+    Manufacturer_Id = models.ForeignKey(Manufacturer, )
+
+    class Meta:
+        ordering = ('-Created',)
+
+    def __str__(self):
+        return self.Category_Name
+
+    # def get_absolute_url(self):
+    #     return reverse('category_detail', args=(self.slug,))
+    #
+    # def get_update_url(self):
+    #     return reverse('category_update', args=(self.slug,))
+
+
+class CategoryDescription(models.Model):
+
+    # Fields
+    # slug = extension_fields.AutoSlugField(populate_from='name', blank=True)
+    Created = models.DateTimeField(auto_now_add=True, editable=False)
+    Last_updated = models.DateTimeField(auto_now=True, editable=False)
+    Category_Image_URL = models.CharField(max_length=1000)
+    Category_Description = models.TextField(max_length=1000)
+    Category_Description_Id = models.PositiveIntegerField(primary_key=True, auto_created=True)
+
+    # Relationship Fields
+    Category_Id = models.ForeignKey(Category, )
+
+    class Meta:
+        ordering = ('-Created',)
+
+    def __str__(self):
+        return self.Category_Description_Id
+
+    # def get_absolute_url(self):
+    #     return reverse('category_description_detail', args=(self.slug,))
+    #
+    # def get_update_url(self):
+    #     return reverse('category_description_update', args=(self.slug,))
+
+
+class Address(models.Model):
+
+    # Fields
+    Address_Id = models.PositiveIntegerField(primary_key=True, auto_created=True)
+    Name = models.CharField(max_length=1000)
+    # slug = extension_fields.AutoSlugField(populate_from='name', blank=True)
+    Created = models.DateTimeField(auto_now_add=True, editable=False)
+    last_updated = models.DateTimeField(auto_now=True, editable=False)
+    Address_Street_Name = models.CharField(max_length=1000)
+    Landmark = models.CharField(max_length=1000)
+    Pin_Code = models.IntegerField()
+    City = models.IntegerField()
+    State = models.IntegerField()
+    Location = models.IntegerField()
+
+    # Relationship Fields
+    Manufacturer_Id = models.ForeignKey(Manufacturer, )
+
+    class Meta:
+        ordering = ('-Created',)
+
+    def __str__(self):
+        return self.Name
+
+    # def get_absolute_url(self):
+    #     return reverse('address_detail', args=(self.slug,))
+    #
+    # def get_update_url(self):
+    #     return reverse('address_update', args=(self.slug,))
+
 
 class Garage(models.Model):
 
-    SERVICES = (
+    # Fields
+    Garage_Id = models.PositiveIntegerField(primary_key=True)
+    Name = models.CharField(max_length=255)
+    # slug = extension_fields.AutoSlugField(populate_from='name', blank=True)
+    Created = models.DateTimeField(auto_now_add=True, editable=False)
+    Last_updated = models.DateTimeField(auto_now=True, editable=False)
+    Garage_Name = models.CharField(max_length=1000)
+    Year_of_Establishment = models.DateField()
+    Email_Id = models.CharField(max_length=1000)
+    Opening_Time = models.TimeField()
+    Closing_Time = models.TimeField()
+    Days_of_Operation = models.PositiveIntegerField()
+    Address = models.ForeignKey(Address, default=1)
 
-        (1, 'Washing'),
-        (2, 'Hard_wash'),
-        (3, 'Cold_wash'),
-
-    )
-
-    Garage_Name = models.CharField(max_length=500)
-    Garage_ID = models.IntegerField(primary_key=True)
-    Garage_Location = models.CharField(max_length=255, blank=True)
-    # Address
-    # Owners (many in no.)
-    Number_of_Two_Post_Lift = models.IntegerField(blank=True)
-    Garage_Area = models.IntegerField(blank=True)
-    Number_of_Mechanic = models.IntegerField(blank=True)
-    Field_of_Expertise = models.IntegerField(
-        choices=SERVICES,
-        default=None,
-
-    )
-    Number_of_Advisor = models.IntegerField()
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
-    Phone_Number_Primary = models.CharField(validators=[phone_regex], blank=True, max_length=15) # validators should be a list
-    Phone_Number_Secondary = models.CharField(validators=[phone_regex], blank=True, max_length=15) # validators should be a list
+    class Meta:
+        ordering = ('-Created',)
 
     def __str__(self):
-        return self.Garage_Name
+        return self.Name
+
+    # def get_absolute_url(self):
+    #     return reverse('garage_detail', args=(self.slug,))
+    #
+    # def get_update_url(self):
+    #     return reverse('garage_update', args=(self.slug,))
+
+

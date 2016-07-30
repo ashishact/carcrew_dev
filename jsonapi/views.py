@@ -1,12 +1,15 @@
 # from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 
 
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from rest_framework import generics
+
 from jsonapi.models import Car, Product,  Garage
-from jsonapi.serializers import CarSerializers, ProductSerializers, GarageSerializers
+from jsonapi.serializers import CarSerializer, ProductSerializer, GarageSerializer
 
 # Create your views here.
 
@@ -22,149 +25,155 @@ def index(request):
 #     return render_to_response('public/index.html')
 ###################################################
 
-class JSONResponse(HttpResponse):
-    """
-    An HttpResponse that renders its content into JSON.
-    """
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
-
 
 # Cars ######################################################
-@csrf_exempt
-def car_list(request):
+class CarList(generics.ListCreateAPIView):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializer
+
+
+class CarDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializer
+
+# class CarList(APIView):
+#     """
+#     List all cars, or create a new car.
+#     """
+#
+#     def get(self, request, format=None):
+#         cars = Car.objects.all()
+#         serializer = CarSerializers(cars, many=True)
+#         return Response(serializer.data)
+#
+#     def post(self, request, format=None):
+#         serializer = CarSerializers(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+#
+# class CarDetail(APIView):
+#     """
+#     send details of a car
+#     """
+#     def get_object(self, pk):
+#         try:
+#             return Car.objects.get(pk=pk)
+#         except Car.DoesNotExist:
+#             raise Http404
+#
+#     def get(self, request, pk, format=None):
+#         car = self.get_object(pk)
+#         serializer = CarSerializers(car)
+#         return Response(serializer.data)
+#
+#     def put(self, request, pk, format=None):
+#         car = self.get_object(pk)
+#         serializer = CarSerializers(car, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+#     def delete(self, request, pk, format=None):
+#         car = self.get_object(pk)
+#         car.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+#
+
+# Product ######################################################
+class ProductList(APIView):
     """
-    List all code snippets, or create a new snippet.
+    List all cars, or create a new car.
     """
-    if request.method == 'GET':
-        cars = Car.objects.all()
-        serializer = CarSerializers(cars, many=True)
-        return JSONResponse(serializer.data)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = CarSerializers(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
-
-
-@csrf_exempt
-def car_detail(request, pk):
-    """
-    Retrieve, update or delete a code snippet.
-    """
-    try:
-        car = Car.objects.get(pk=pk)
-    except Car.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = CarSerializers(car)
-        return JSONResponse(serializer.data)
-
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = CarSerializers(car, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JSONResponse(serializer.data)
-        return JSONResponse(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-        car.delete()
-
-
-# Products ##################################################
-@csrf_exempt
-def product_list(request):
-    """
-    List all code snippets, or create a new snippet.
-    """
-    if request.method == 'GET':
+    def get(self, request, format=None):
         products = Product.objects.all()
-        serializer = ProductSerializers(products, many=True)
-        return JSONResponse(serializer.data)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ProductSerializers(data=data)
+    def post(self, request, format=None):
+        serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def product_detail(request, pk):
+class ProductDetail(APIView):
     """
-    Retrieve, update or delete a code snippet.
+    send details of a car
     """
-    try:
-        product = Product.objects.get(pk=pk)
-    except Product.DoesNotExist:
-        return HttpResponse(status=404)
+    def get_object(self, pk):
+        try:
+            return Product.objects.get(pk=pk)
+        except Car.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
-        serializer = ProductSerializers(product)
-        return JSONResponse(serializer.data)
+    def get(self, request, pk, format=None):
+        product = self.get_object(pk)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ProductSerializers(product, data=data)
+    def put(self, request, pk, format=None):
+        product = self.get_object(pk)
+        serializer = ProductSerializer(product, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JSONResponse(serializer.data)
-        return JSONResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk, format=None):
+        product = self.get_object(pk)
         product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# Garage #############################################
-@csrf_exempt
-def garage_list(request):
+# Garage ######################################################
+class GarageList(APIView):
     """
-    List all code snippets, or create a new snippet.
+    List all cars, or create a new car.
     """
-    if request.method == 'GET':
+
+    def get(self, request, format=None):
         garages = Garage.objects.all()
-        serializer = GarageSerializers(garages, many=True)
-        return JSONResponse(serializer.data)
+        serializer = GarageSerializer(garages, many=True)
+        return Response(serializer.data)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = GarageSerializers(data=data)
+    def post(self, request, format=None):
+        serializer = CarSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def garage_detail(request, pk):
+class GarageDetail(APIView):
     """
-    Retrieve, update or delete a code snippet.
+    send details of a car
     """
-    try:
-        garage = Garage.objects.get(pk=pk)
-    except Garage.DoesNotExist:
-        return HttpResponse(status=404)
+    def get_object(self, pk):
+        try:
+            return Garage.objects.get(pk=pk)
+        except Garage.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
-        serializer = GarageSerializers(garage)
-        return JSONResponse(serializer.data)
+    def get(self, request, pk, format=None):
+        car = self.get_object(pk)
+        serializer = CarSerializer(car)
+        return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = GarageSerializers(garage, data=data)
+    def put(self, request, pk, format=None):
+        car = self.get_object(pk)
+        serializer = CarSerializer(car, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JSONResponse(serializer.data)
-        return JSONResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk, format=None):
+        garage = self.get_object(pk)
         garage.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

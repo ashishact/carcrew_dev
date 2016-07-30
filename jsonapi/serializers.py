@@ -1,60 +1,108 @@
 from rest_framework import serializers
-from .models import Car, Product, Garage
+
+from . import models
 
 
-class CarSerializers(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = Car
+        model = models.Product
         fields = (
-            'Car_Chasis_Number',
-            # 'Car_Manufacturer',
-            'Model',
+            'Product_Name',
+            'Created',
+            'Last_updated',
+            'Product_Id',
+        )
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Category
+        fields = (
+            'Category_Name',
+            'Created',
+            'Last_updated',
+            'Category_Id',
+            'Parent_Id',
+        )
+
+
+class CategoryDescriptionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.CategoryDescription
+        fields = (
+            'Created',
+            'Last_updated',
+            'Category_Image_URL',
+            'Category_Description',
+        )
+
+
+class CarSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Car
+        fields = (
+            'Car_Name',
+            'Created',
+            'Last_updated',
+            'Car_Id',
+            'Manufacturer_Name',
+            'Model_Name',
+            'Version',
             'Fuel_Type',
             'Transmission',
-            'Year_of_Manufacture',
-            'Number_of_Service',
-            'Number_of_KMs_Travelled',
-            'Registration_Number',
-            'Engine_Number',
+            'Year',
         )
 
 
-class ProductSerializers(serializers.ModelSerializer):
+class ManufacturerSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = Product
+        model = models.Manufacturer
         fields = (
-            'Product_ID',
-            'Product_Name',
-            'Manufacture_Name',
-            'Supplier_Name',
-            'Date_of_purchase',
-            'Status',
-            'Price',
-            'Discount',
-            'Final_Price',
-            'SKU_Number',
-            'Meta_Description',
-            'Meta_Keyword',
-            'Category',
-            'Sub_Category',
-            'Image',
-            'Compatible_Car',
-            'Original_Car',
+            'Manufacturer_Name',
+            'Created',
+            'Last_updated',
+            'Manufacturer_Id',
+            'Manufacturer_Location',
         )
 
 
-class GarageSerializers(serializers.ModelSerializer):
+class AddressSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = Garage
+        model = models.Address
         fields = (
+            'Name',
+            'created',
+            'last_updated',
+            'Address_Street_Name',
+            'Landmark',
+            'Pin_Code',
+            'City',
+            'State',
+            'Location',
+        )
+
+
+class GarageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Garage
+        fields = (
+            'Name',
+            'Created',
+            'Last_updated',
             'Garage_Name',
-            'Garage_ID',
-            'Garage_Location',
-            'Number_of_Two_Post_Lift',
-            'Garage_Area',
-            'Number_of_Mechanic',
-            'Field_of_Expertise',
-            'Number_of_Advisor',
-            'Phone_Number_Primary',
-            'Phone_Number_Secondary',
+            'Garage_Id',
+            'Year_of_Establishment',
+            'Email_Id',
+            'Opening_Time',
+            'Closing_Time',
+            'Days_of_Operation',
         )
+
+
